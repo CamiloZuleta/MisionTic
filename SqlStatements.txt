@@ -1,0 +1,60 @@
+-- Crear base de datos clientes
+CREATE TABLE CLIENT(
+	ID NUMBER NOT NULL PRIMARY KEY,
+	NAME VARCHAR(4000),
+	EMAIL VARCHAR2(20),
+	AGE NUMBER
+)
+
+--Crear base de datos mensajes
+CREATE TABLE MESSAGE(
+	ID NUMBER NOT NULL PRIMARY KEY,
+	MESSAGETEXT VARCHAR2(4000)
+)
+
+--========================================================================================================================
+--Sentencias client
+
+GET -> SELECT * FROM CLIENT
+
+POST -> INSERT INTO CLIENT (ID, NAME, EMAIL, AGE) VALUES (:id, :name, :email, :age);
+:status_code := 201;
+
+PUT -> UPDATE CLIENT SET NAME = :name, EMAIL = :email, AGE = :age WHERE ID = :id;
+: status_code:=201;
+
+DELETE -> DELETE CLIENT WHERE ID = :id;
+:status_code := 201;
+
+--========================================================================================================================
+--Sentencias client/:id
+GET -> SELECT * FROM CLIENT WHERE ID = :id
+
+DELETE -> DELETE CLIENT WHERE ID = :id;
+:status_code := 201;
+
+--========================================================================================================================
+--Sentencias message
+
+GET -> SELECT * FROM MESSAGE
+
+POST -> INSERT INTO MESSAGE (ID, MESSAGETEXT) VALUES (:id, messagetext);
+:status_code := 201;
+
+PUT -> UPDATE MESSAGE SET MESSAGETEXT = :messagetext WHERE ID = :id;
+:status_code :=201;
+
+DELETE -> DELETE MESSAGE WHERE ID = :id;
+:status_code:= 204;
+
+--========================================================================================================================
+--Sentencias message/:id
+
+GET -> SELECT * FROM MESSAGE WHERE ID = :id
+
+DELETE -> DELETE MESSAGE WHERE ID = :id;
+:status_code := 204;
+
+
+
+
