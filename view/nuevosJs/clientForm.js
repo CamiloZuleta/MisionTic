@@ -73,7 +73,7 @@ function putData(url, data){
     });
 }
 
-function getData(url, func) {
+function getData(url) {
     $.ajax({
         url: url,
         type: "GET",

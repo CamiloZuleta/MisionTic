@@ -73,7 +73,7 @@ function renderTable(dataMessage) {
     tableMessage.innerHTML = `
             <tr class = "rowTable">
                 <th>Message</th>
-                <th></th>
+
             </tr>`;
     for (i = 0; i < dataMessage.length; i++) {
         tableMessage.innerHTML += `
