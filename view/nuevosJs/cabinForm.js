@@ -1,15 +1,18 @@
 window.onload = () => {
-    const urlCabin = "https://gcb6640089cf2cb-db202109261438.adb.sa-saopaulo-1.oraclecloudapps.com/ords/admin/cabin/cabin";
+    const urlCabin = "http://150.230.77.182:80/api/Cabin";
+    getDataCategory("http://150.230.77.182:80/api/Category/all");
     const submitCabin = document.querySelector("#submit_cabin");
-    const getCabin = document.querySelector("#cabin_details");
+    const getCabin = document.querySelector("#cabinDetails");
 
     function dataValCabin() {
         const data = {
-            "id": $("#id_cabin").val(),
             "brand": $("#brand").val(),
-            "rooms": $("#rooms").val(),
-            "category_id": $("#category_id").val(),
-            "name": $("#name").val()
+            "rooms": parseInt($("#rooms").val()),
+            "category":{
+                "id":parseInt($("#category_id").val())
+            },
+            "name": $("#name").val(),
+            "description": $("#description").val(),
         }
         return data
     }
@@ -28,7 +31,7 @@ window.onload = () => {
 
     getCabin.addEventListener("click", (e) => {
         e.preventDefault();
-        data = JSON.stringify(dataValCabin());
+        console.log(urlCabin);
         getData(urlCabin);
 
     })
@@ -36,21 +39,27 @@ window.onload = () => {
 
 function postData(url, data) {
     $.ajax({
-        url: url,
+        url: url+"/save",
         type: "POST",
         data: data,
         contentType: "application/json",
         dataType: "json",
         success: function (json, textStatus, xhr) {
             alert('Petición realizada ' + xhr.status);
-        },
-        error: function (xhr, status) {
-            alert('Error en la petición ' + xhr.status);
-            $("#id_cabin").val("");
             $("#brand").val("");
             $("#rooms").val("");
             $("#category_id").val("");
-            $("#name").val("")
+            $("#name").val("");
+            $("#description").val("");
+        },
+        error: function (xhr, status) {
+            console.log(data);
+            alert('Error en la petición ' + xhr.status);
+            $("#brand").val("");
+            $("#rooms").val("");
+            $("#category_id").val("");
+            $("#name").val("");
+            $("#description").val("");
         },
 
     });
@@ -58,7 +67,7 @@ function postData(url, data) {
 
 function putData(url, data){
     $.ajax({
-        url: url,
+        url: url+"/update",
         type: "PUT",
         data: data,
         contentType: "application/json",
@@ -81,15 +90,16 @@ function putData(url, data){
 
 function getData(url) {
     $.ajax({
-        url: url,
+        url: url+"/all",
         type: "GET",
         contentType: "application/json",
         dataType: "json",
         success: function (json, textStatus, xhr) {
-            const dataMessage = json.items;
+            const dataMessage = json;
             renderTable(dataMessage);
         },
         error: function (xhr, status) {
+            console.log(url+"/all");
             alert('Error en la petición ' + xhr.status);
         },
     });
@@ -111,7 +121,7 @@ function renderTable(dataMessage) {
         <tr class = "rowTable">
             <td>${dataMessage[i].brand}</td>
             <td>${dataMessage[i].rooms}</td>
-            <td>${dataMessage[i].category_id}</td>
+            <td>${dataMessage[i].category}</td>
             <td>${dataMessage[i].name}</td>
             <td><button type="button" onclick="deleteById(${dataMessage[i].id})">borrar</button></td>
         </tr>
@@ -122,7 +132,7 @@ function renderTable(dataMessage) {
 
 function deleteById(id) {
     window.alert("Está seguro que desea borrar esta cabaña");
-    const url = "https://gcb6640089cf2cb-db202109261438.adb.sa-saopaulo-1.oraclecloudapps.com/ords/admin/cabin/cabin";
+    const url = "http://150.230.77.182:80/api/Cabin";
     fetch(url+"/"+id,{
         method:"DELETE"
     })
@@ -131,3 +141,25 @@ function deleteById(id) {
     })
 }
 
+function getDataCategory(url) {
+    $.ajax({
+        url: url,
+        type: "GET",
+        contentType: "application/json",
+        dataType: "json",
+        success: function (json, textStatus, xhr) {
+            const dataMessage = json;
+            if(dataMessage !== []){
+                dataMessage.forEach(element => {
+                    $("#category_id").append(`
+                    <option value="${element.id}">${element.name}</option>
+                    `)
+                });
+            }
+        },
+        error: function (xhr, status) {
+            console.log(url);
+            alert('Error en la petición ' + xhr.status);
+        },
+    });
+}

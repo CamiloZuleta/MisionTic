@@ -1,12 +1,12 @@
 window.onload = () => {
     const submitClient = document.querySelector("#submitClient");
-    const urlClient = "https://gcb6640089cf2cb-db202109261438.adb.sa-saopaulo-1.oraclecloudapps.com/ords/admin/client/client";
+    const urlClient = "http://150.230.77.182:80/api/Client";
 
     function dataValClient() {
         const data = {
-            "id": $("#id_client").val(),
-            "name": $("#name").val(),
             "email": $("#email").val(),
+            "password": $("#password").val(),
+            "name": $("#name").val(),
             "age": $("#age").val(),
         }
         return data
@@ -24,28 +24,35 @@ window.onload = () => {
         putData(urlClient, data);
     })
 
-    $("#client_details").click(function () {
+    $("#clientDetails").click(function () {
         getData(urlClient);
     })
 
 }
 postData = (url, data) => {
     $.ajax({
-        url: url,
+        url: url+"/save",
         type: "POST",
         data: data,
         contentType: "application/json",
         dataType: "json",
         success: function (json, textStatus, xhr) {
-
+            $("#name").val("");
+            $("#password").val("");
+            $("#email").val("");
+            $("#age").val("");
         },
         error: function (xhr, status) {
             console.log(xhr.status);
+            $("#name").val("");
+            $("#password").val("");
+            $("#email").val("");
+            $("#age").val("");
         },
         complete: function (xhr) {
             alert('Petición realizada ' + xhr.status);
-            $("#id_client").val("");
             $("#name").val("");
+            $("#password").val("");
             $("#email").val("");
             $("#age").val("");
         }
@@ -54,7 +61,7 @@ postData = (url, data) => {
 
 function putData(url, data){
     $.ajax({
-        url: url,
+        url: url+"/update",
         type: "PUT",
         data: data,
         contentType: "application/json",
@@ -75,12 +82,12 @@ function putData(url, data){
 
 function getData(url) {
     $.ajax({
-        url: url,
+        url: url+"/all",
         type: "GET",
         contentType: "application/json",
         dataType: "json",
         success: function (json, textStatus, xhr) {
-            const dataMessage = json.items;
+            const dataMessage = json;
             renderTable(dataMessage);
         },
         error: function (xhr, status) {
@@ -105,7 +112,7 @@ function renderTable(dataMessage) {
                     <td>${dataMessage[i].name}</td>
                     <td>${dataMessage[i].email}</td>
                     <td>${dataMessage[i].age} </td>                        
-                    <td><button class="delete_button" onclick = 'deleteById(${dataMessage[i].id})'>borrar</button></td>
+                    <td><button class="delete_button" onclick = 'deleteById(${dataMessage[i].idClient})'>borrar</button></td>
                 </tr>
                 `;
     }
@@ -113,7 +120,7 @@ function renderTable(dataMessage) {
 
 function deleteById(id) {
     window.alert("Está seguro que desea borrar este cliente");
-    const url = "https://gcb6640089cf2cb-db202109261438.adb.sa-saopaulo-1.oraclecloudapps.com/ords/admin/client/client";
+    const url = "http://150.230.77.182:80/api/Client";
     fetch(url+"/"+id,{
         method:"DELETE"
     })

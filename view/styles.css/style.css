@@ -102,4 +102,12 @@ td{
 }
 h2{
     text-align: center;
+    padding-top: 30px;
+}
+textarea{
+    width:60%;
+    height: 100px;
+}
+.selectSpecial{
+    width: 60%;
 }

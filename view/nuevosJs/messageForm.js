@@ -1,12 +1,15 @@
 window.onload = () => {
-    const urlMessage = "https://gcb6640089cf2cb-db202109261438.adb.sa-saopaulo-1.oraclecloudapps.com/ords/admin/message/message";
+    const urlMessage = "http://150.230.77.182:80/api/Message";
+    getDataCabin("http://150.230.77.182:80/api/Cabin");
+    getDataClient("http://150.230.77.182:80/api/Client");
     const submitMessage = document.querySelector("#submitMessage");
-    const messageDetails = document.querySelector("#message_details");
+    const messageDetails = document.querySelector("#messageDetails");
 
     function dataValMessage() {
         const data = {
-            "id": $("#id_message").val(),
-            "messagetext": $("#messagetext").val(),
+            "messageText": $("#messagetext").val(),
+            "cabin": parseInt($("#cabin").val()),
+            "client": parseInt($("#client").val()),
         }
         return data
     }
@@ -31,19 +34,19 @@ window.onload = () => {
 
 postData = (url, data) => {
     $.ajax({
-        url: url,
+        url: url+"/save",
         type: "POST",
         data: data,
         contentType: "application/json",
         dataType: "json",
         success: function (json, textStatus, xhr) {
-            
+            $("#messagetext").val("");  
         },
         error: function (xhr, status) {
+            $("#messagetext").val("");
         },
         complete: function (xhr) {
             alert('Petición realizada ' + xhr.status);
-            $("#id_message").val("");
             $("#messagetext").val("");
         }
     });
@@ -51,17 +54,17 @@ postData = (url, data) => {
 
 function putData(url, data){
     $.ajax({
-        url: url,
+        url: url+"/update",
         type: "PUT",
         data: data,
         contentType: "application/json",
         dataType: "json",
         success: function (json, textStatus, xhr) {
             alert('Petición realizada ' + xhr.status);
+            $("#messagetext").val("");
         },
         error: function (xhr, status) {
             alert('Error en la petición ' + xhr.status);
-            $("#id_message").val("");
             $("#messagetext").val("");
         },
 
@@ -73,13 +76,17 @@ function renderTable(dataMessage) {
     tableMessage.innerHTML = `
             <tr class = "rowTable">
                 <th>Message</th>
+                <th>Cabin</th>
+                <th>Client</th>
 
             </tr>`;
     for (i = 0; i < dataMessage.length; i++) {
         tableMessage.innerHTML += `
         <tr class = "rowTable">
-            <td>${dataMessage[i].messagetext}</td>
-            <td><button type="button" class="delete_button" onclick = 'deleteById(${dataMessage[i].id})'>borrar</button></td>
+            <td>${dataMessage[i].messageText}</td>
+            <td>${dataMessage[i].cabin.name}</td>
+            <td>${dataMessage[i].client.name}</td>
+            <td><button type="button" class="delete_button" onclick = 'deleteById(${dataMessage[i].idMessage})'>borrar</button></td>
         </tr>
         `;
     }
@@ -87,7 +94,7 @@ function renderTable(dataMessage) {
 
 function deleteById(id) {
     window.alert("Está seguro que desea borrar este mensaje");
-    const url = "https://gcb6640089cf2cb-db202109261438.adb.sa-saopaulo-1.oraclecloudapps.com/ords/admin/message/message";
+    const url = "http://150.230.77.182:80/api/Message";
     fetch(url+"/"+id,{
         method:"DELETE"
     })
@@ -98,16 +105,59 @@ function deleteById(id) {
 
 function getData(url) {
     $.ajax({
-        url: url,
+        url: url+"/all",
         type: "GET",
         contentType: "application/json",
         dataType: "json",
         success: function (json, textStatus, xhr) {
-            const dataMessage = json.items;
+            const dataMessage = json;
             renderTable(dataMessage);
         },
         error: function (xhr, status) {
             alert('Error en la petición ' + xhr.status);
         },
+    });
+}
+function getDataCabin(url) {
+    $.ajax({
+        url: url+"/all",
+        type: "GET",
+        contentType: "application/json",
+        dataType: "json",
+        success: function (json, textStatus, xhr) {
+            const dataMessage = json;
+            if(dataMessage !== []){
+                dataMessage.forEach(element => {
+                    $("#cabin").append(`
+                    <option value="${element.id}">${element.name}</option>
+                    `)
+                });
+            }
+        },
+        error: function (xhr, status) {
+            console.log(url+"/all");
+            alert('Error en la petición ' + xhr.status);
+        },
+    });
+}
+function getDataClient(url) {
+    $.ajax({
+        url: url+"/all",
+        type: "GET",
+        contentType: "application/json",
+        dataType: "json",
+        success: function (json, textStatus, xhr) {
+            const dataMessage = json;
+            if(dataMessage !== []){
+                dataMessage.forEach(element => {
+                    $("#client").append(`
+                    <option value="${element.idClient}">${element.name}</option>
+                    `)
+                });
+            }
+        },
+        error: function (xhr, status) {
+            alert('Error en la petición ' + xhr.status);
+        }
     });
 }

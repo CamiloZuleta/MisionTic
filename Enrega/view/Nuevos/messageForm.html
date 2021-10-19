@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="../nuevosJs/messageForm.js"></script>
+    <link rel="stylesheet" href="../styles.css/style.css">
+    <title>MisionTic</title>
+</head>
+
+<body>
+    <header>
+        <h1>CabinRent</h1>
+    </header>
+    <div id="secondHeader">
+        <ul>
+            <li><a href="./">Principal</a></li>
+            <li><a href="./cabinForm.html">Cabañas</a></li>
+            <li><a href="./clientForm.html">Clientes</a></li>
+            <li><a href="./messageForm.html">Mensajes</a></li>
+            <li><a href="./categoryForm.html">categoría</a></li>
+            <li><a href="./reservationForm.html">Reservación</a></li>
+            <li><a href="./scoreForm.html">Puntuación</a></li>
+            <li><a href="./adminForm.html">Administradores</a></li>
+        </ul>
+    </div>
+    <h2>Nuevo mensaje <button id="message_details">detalles</button></h2>
+    <table id="table_message" class="tableGet">
+    </table>
+    <form method="POST" class="CrudForms">
+        <fieldset>
+            
+            <div class="formInputs">
+                <label for="id">Id del mensaje</label>
+                <div><input type="number" id="id_message" name="id_message"></div>
+            </div>
+            <div class="formInputs">
+                <label for="messagetext"> texto del mensaje</label>
+                <div><input type="text" id="messagetext" name="messagetext"></div>
+            </div>
+            <div class="buttonsDiv">
+                <button id="submitMessage" type="submit">Nuevo</button>
+                <button id="actualizarMessage" type="submit">Actualizar</button>
+            </div>
+        </fieldset>
+    </form>
+</body>
+
+</html>
