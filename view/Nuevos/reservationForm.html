@@ -21,7 +21,7 @@
             <li><a href="./cabinForm.html">Cabañas</a></li>
             <li><a href="./clientForm.html">Clientes</a></li>
             <li><a href="./messageForm.html">Mensajes</a></li>
-            <li><a href="./categoryForm.html">categoría</a></li>
+            <li><a href="./categoryForm.html">Categoría</a></li>
             <li><a href="./reservationForm.html">Reservación</a></li>
             <li><a href="./scoreForm.html">Puntuación</a></li>
             <li><a href="./adminForm.html">Administradores</a></li>
@@ -32,26 +32,22 @@
     </table>
     <form method="POST" class="CrudForms">
         <fieldset>
-            
-            <div class="formInputs">
-                <label for="id">Id de la reserva</label>
-                <div><input type="number" id="id_reservation" name="id_reservation"></div>
-            </div>
             <div class="formInputs">
                 <label for="nameCabin">Cabaña a reservar</label>
-                <div><select id="nameCabin" name="nameCabin"> 
-
+                <div><select class="selectSpecial" id="nameCabin" name="nameCabin"> 
+                    <option value="NoItem"></option>
                 </select></div>
             </div>
             <div class="formInputs">
                 <label for="nameClient">Cliente que reserva</label>
-                <div><select id="nameClient" name="nameClient">
-                    
+                <div><select class="selectSpecial" id="nameClient" name="nameClient">
+                    <option value="NoItem"></option>
                 </select></div>
             </div>
             <div class="formInputs">
-                <label for="status">Cliente que reserva</label>
-                <div><select id="status" name="status">
+                <label for="status">Status de la reserva</label>
+                <div><select class="selectSpecial" id="status" name="status">
+                    <option value="NoItem"></option>
                     <option value="Programado">Programado</option>     
                     <option value="Cancelado">Cancelado</option>     
                     <option value="Realizado">Realizado</option>     

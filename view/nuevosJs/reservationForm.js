@@ -1,19 +1,24 @@
-//ARREGLAR TODO
-
 window.onload = () => {
-    const urlReservation = "http://150.230.77.182:80/api/Reservation/";
-    
+    const urlReservation = "http://150.230.77.182:80/api/Reservation";
+    getDataCabin("http://150.230.77.182:80/api/Cabin");
+    getDataClient("http://150.230.77.182:80/api/Client");
     function dataReservation() {
+        let date = $("#startDate").val();
+        date = new Date(date)
+        date = date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate();
+        let date2 = $("#endDate").val();
+        date2 = new Date(date2)
+        date2 = date2.getFullYear()+"-"+(date2.getMonth()+1)+"-"+date2.getDate()
         const data = {
-            "startDate": $("#startDate").val(),
-            "devolutionDate": $("#endDate").val(),
-            "status":"Programado",
-            "cabin":$("#nameCabin").val(),
-            "client": $("#nameClient").val()
+            "startDate": date,
+            "devolutionDate": date2,
+            "status":$("#status").val(),
+            "createdDate":"2020-12-04",
+            "cabin":parseInt($("#nameCabin").val()),
+            "client": parseInt($("#nameClient").val())
         }
         return data
     }
-
     $("#submitReservation").click((e) => {
         e.preventDefault();
         const data = JSON.stringify(dataReservation());
@@ -26,17 +31,15 @@ window.onload = () => {
         putData(urlReservation, data);
     })
 
-    $("reservationDetails").click((e) => {
+    $("#reservationDetails").click((e) => {
         e.preventDefault();
-        const data = JSON.stringify(dataReservation());
         getData(urlReservation);
 
     })
 }
-
 function postData(url, data) {
     $.ajax({
-        url: url,
+        url: url+"/save",
         type: "POST",
         data: data,
         contentType: "application/json",
@@ -45,20 +48,15 @@ function postData(url, data) {
             alert('Petición realizada ' + xhr.status);
         },
         error: function (xhr, status) {
+            console.log(data);
             alert('Error en la petición ' + xhr.status);
-            $("#id_cabin").val("");
-            $("#brand").val("");
-            $("#rooms").val("");
-            $("#category_id").val("");
-            $("#name").val("")
         },
 
     });
 }
-
 function putData(url, data){
     $.ajax({
-        url: url,
+        url: url+"/update",
         type: "PUT",
         data: data,
         contentType: "application/json",
@@ -68,12 +66,6 @@ function putData(url, data){
         },
         error: function (xhr, status) {
             alert('Error en la petición ' + xhr.status);
-            $("#id_cabin").val("");
-            $("#brand").val("");
-            $("#rooms").val("");
-            $("#category_id").val("");
-            $("#name").val("")
-            
         },
 
     });
@@ -81,12 +73,13 @@ function putData(url, data){
 
 function getData(url) {
     $.ajax({
-        url: url,
+        url: url+"/all",
         type: "GET",
         contentType: "application/json",
         dataType: "json",
         success: function (json, textStatus, xhr) {
-            const dataMessage = json.items;
+            const dataMessage = json;
+            console.log(dataMessage);
             renderTable(dataMessage);
         },
         error: function (xhr, status) {
@@ -96,33 +89,34 @@ function getData(url) {
 }
 
 function renderTable(dataMessage) {
-    const tableCabin = document.querySelector("#table_cabin");
+    const tableCabin = document.querySelector("#table_reservation");
     tableCabin.innerHTML = `
             <tr class = "rowTable">
-                <th>brand</th>
-                <th>rooms</th>
-                <th>category_id</th>
-                <th>name</th>
+                <th>StartDate</th>
+                <th>EndDate</th>
+                <th>status</th>
+                <th>client</th>
+                <th>cabin</th>
                 <th></th>
             </tr>
     `;
     for(i=0;i<dataMessage.length; i++){
      tableCabin.innerHTML += `
         <tr class = "rowTable">
-            <td>${dataMessage[i].brand}</td>
-            <td>${dataMessage[i].rooms}</td>
-            <td>${dataMessage[i].category_id}</td>
-            <td>${dataMessage[i].name}</td>
-            <td><button type="button" onclick="deleteById(${dataMessage[i].id})">borrar</button></td>
+            <td>${dataMessage[i].startDate.slice(0,9)}</td>
+            <td>${dataMessage[i].devolutionDate.slice(0,9)}</td>
+            <td>${dataMessage[i].status}</td>
+            <td>${dataMessage[i].client.name}</td>
+            <td>${dataMessage[i].cabin.name}</td>
+            <td><button type="button" onclick="deleteById(${dataMessage[i].idReservation})">borrar</button></td>
         </tr>
         `;
     }
 
 }
-
 function deleteById(id) {
     window.alert("Está seguro que desea borrar esta cabaña");
-    const url = "https://gcb6640089cf2cb-db202109261438.adb.sa-saopaulo-1.oraclecloudapps.com/ords/admin/cabin/cabin";
+    const url = "http://150.230.77.182:80/api/Reservation";
     fetch(url+"/"+id,{
         method:"DELETE"
     })
@@ -130,4 +124,45 @@ function deleteById(id) {
         getData(url);
     })
 }
-
+function getDataCabin(url) {
+    $.ajax({
+        url: url+"/all",
+        type: "GET",
+        contentType: "application/json",
+        dataType: "json",
+        success: function (json, textStatus, xhr) {
+            const dataMessage = json;
+            if(dataMessage !== []){
+                dataMessage.forEach(element => {
+                    $("#nameCabin").append(`
+                    <option value="${element.id}">${element.name}</option>
+                    `)
+                });
+            }
+        },
+        error: function (xhr, status) {
+            alert('Error en la petición ' + xhr.status);
+        },
+    });
+}
+function getDataClient(url) {
+    $.ajax({
+        url: url+"/all",
+        type: "GET",
+        contentType: "application/json",
+        dataType: "json",
+        success: function (json, textStatus, xhr) {
+            const dataMessage = json;
+            if(dataMessage !== []){
+                dataMessage.forEach(element => {
+                    $("#nameClient").append(`
+                    <option value="${element.idClient}">${element.name}</option>
+                    `)
+                });
+            }
+        },
+        error: function (xhr, status) {
+            alert('Error en la petición ' + xhr.status);
+        }
+    });
+}

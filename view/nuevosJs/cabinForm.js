@@ -121,7 +121,7 @@ function renderTable(dataMessage) {
         <tr class = "rowTable">
             <td>${dataMessage[i].brand}</td>
             <td>${dataMessage[i].rooms}</td>
-            <td>${dataMessage[i].category}</td>
+            <td>${dataMessage[i].category.name}</td>
             <td>${dataMessage[i].name}</td>
             <td><button type="button" onclick="deleteById(${dataMessage[i].id})">borrar</button></td>
         </tr>
